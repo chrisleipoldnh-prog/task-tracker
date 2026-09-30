@@ -6,17 +6,7 @@ from database import engine, get_db, test_connection
 from models import Base, Task
 from schemas import TaskCreate, TaskUpdate
 
-from fastapi.middleware.cors import CORSMiddleware
-
 app = FastAPI()
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["http://localhost:5173"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
 
 # Create database tables if they do not already exist
 Base.metadata.create_all(bind=engine)
