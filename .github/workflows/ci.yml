@@ -23,5 +23,8 @@ jobs:
       - name: Build backend image
         run: docker build -t task-tracker-backend ./backend
 
+      - name: Test backend  
+        run: docker run --rm task-tracker-backend pytest
+
       - name: Build frontend image
         run: docker build -t task-tracker-frontend ./frontend
