@@ -9,6 +9,10 @@ on:
     branches:
       - main
 
+permissions:
+  contents: read
+  packages: write
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -17,13 +21,21 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v6
 
+      - name: Log in to GHCR
+        if: github.event_name == 'push'
+        uses: docker/login-action@v4
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
       - name: Verify Docker
         run: docker --version
 
       - name: Build backend image
         run: docker build -t task-tracker-backend ./backend
 
-      - name: Test backend  
+      - name: Test backend
         run: docker run --rm task-tracker-backend pytest
 
       - name: Build frontend image
