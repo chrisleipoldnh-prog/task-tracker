@@ -1,5 +1,7 @@
 import os
-from sqlalchemy import create_engine, text, sessionmaker
+from sqlalchemy import create_engine, text
+
+from sqlalchemy.orm import sessionmaker
 
 DB_HOST = os.getenv("DB_HOST")
 DB_PORT = os.getenv("DB_PORT")
@@ -22,3 +24,11 @@ def test_connection():
     with engine.connect() as connection:
         result = connection.execute(text("SELECT 1"))
         return result.scalar()
+
+def get_db():
+    db = SessionLocal()
+
+    try:
+        yield db
+    finally:
+        db.close()
