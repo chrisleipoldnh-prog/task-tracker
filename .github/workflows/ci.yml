@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+      - name: Verify Docker
+        run: docker --version
+
+      - name: Build backend image
+        run: docker build -t task-tracker-backend ./backend
+
+      - name: Build frontend image
+        run: docker build -t task-tracker-frontend ./frontend
