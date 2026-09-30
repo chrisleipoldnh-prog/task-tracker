@@ -33,10 +33,33 @@ jobs:
         run: docker --version
 
       - name: Build backend image
-        run: docker build -t task-tracker-backend ./backend
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/task-tracker-backend:latest \
+            -t ghcr.io/${{ github.repository_owner }}/task-tracker-backend:${{ github.sha }} \
+            ./backend
 
       - name: Test backend
-        run: docker run --rm task-tracker-backend pytest
+        run: |
+          docker run --rm \
+            ghcr.io/${{ github.repository_owner }}/task-tracker-backend:${{ github.sha }} \
+            pytest
 
       - name: Build frontend image
-        run: docker build -t task-tracker-frontend ./frontend
+        run: |
+          docker build \
+            -t ghcr.io/${{ github.repository_owner }}/task-tracker-frontend:latest \
+            -t ghcr.io/${{ github.repository_owner }}/task-tracker-frontend:${{ github.sha }} \
+            ./frontend
+
+      - name: Push backend image
+        if: github.event_name == 'push'
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/task-tracker-backend:latest
+          docker push ghcr.io/${{ github.repository_owner }}/task-tracker-backend:${{ github.sha }}
+
+      - name: Push frontend image
+        if: github.event_name == 'push'
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/task-tracker-frontend:latest
+          docker push ghcr.io/${{ github.repository_owner }}/task-tracker-frontend:${{ github.sha }}
